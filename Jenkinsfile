@@ -1,14 +1,21 @@
 pipeline {
     agent any
     stages {
+	stage ('checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/vijithchin/tooplate-sample.git'
+            }
+        }
         stage ('build') {
             steps {
-                docker build -t tooplate .
+                sh 'docker build -t tooplate .'
             }
         }
         stage ('deploy') {
-            docker rm -f tooplate-site || true
-            docker run -d --name tooplate-site -p 8081:80 tooplate
+            sh '''
+		docker rm -f tooplate-site || true
+            	docker run -d --name tooplate-site -p 8081:80 tooplate
+	'''
         }
     }
 }
